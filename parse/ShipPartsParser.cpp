@@ -80,6 +80,7 @@ namespace {
             qi::_f_type _f;
             qi::_g_type _g;
             qi::_h_type _h;
+            qi::_i_type _i;
             qi::_pass_type _pass;
             qi::_r1_type _r1;
             qi::eps_type eps;
@@ -107,13 +108,16 @@ namespace {
                    | (labeller.rule(Shots_token)     > double_rule [ _h = _1 ])   // shots is secondary for direct fire weapons
                    |  eps [ _h = 1.0 ]
                   )
+                > (  (labeller.rule(Noisiness_token) > double_rule [ _i = _1 ])   // noisiness for weapons / fighter bays
+                   |  eps [ _i = 1.0 ]
+                  )
                 > (   tok.NoDefaultCapacityEffect_ [ _g = false ]
                    |  eps [ _g = true ]
                   )
                 >   slots(_f)
                 >   common_rules.common           [ _e = _1 ]
                 >   labeller.rule(Icon_token)        > tok.string    [ _b = _1 ]
-                  ) [ insert_parttype_(_r1, _c, _d, _h, _e, _a, _f, _b, _g) ]
+                  ) [ insert_parttype_(_r1, _c, _d, _h, _i, _e, _a, _f, _b, _g) ]
                 ;
 
             start
@@ -145,6 +149,7 @@ namespace {
                 CommonParams,
                 std::vector<ShipSlotType>,
                 bool,
+                double,
                 double
             >
         > part_type_rule;
